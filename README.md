@@ -1,1 +1,7 @@
-which download data, reduce number of entry of the CSV files, and process them to keep some valuable data in a postgresql DB
+This batch is a pco to handle big csv file 
+
+The tasklet download the file, unzip it, and remove line to keep an hundred
+
+the batch himself read the csv Files and cross data with the other csv files to keep only some data
+
+The database is a Postgresql
