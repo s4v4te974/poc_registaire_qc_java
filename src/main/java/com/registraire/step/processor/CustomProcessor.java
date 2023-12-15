@@ -34,7 +34,7 @@ public class CustomProcessor implements ItemProcessor<RegistraireDto, Registrair
 
 
     @Override
-    public RegistraireEntity process(RegistraireDto item) throws Exception {
+    public RegistraireEntity process(RegistraireDto item) {
 
         RegistraireMapper mapper = Mappers.getMapper(RegistraireMapper.class);
 

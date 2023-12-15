@@ -93,6 +93,7 @@ public class MyTasklet implements Tasklet {
         log.info(UNZIP_WITH_SUCCESS);
     }
 
+    // this method is optional, use only for test
     private void removeUnecessaryLines() {
         try (BufferedReader reader = new BufferedReader(new FileReader(ENTREPRISE));
              BufferedWriter writer = new BufferedWriter(new FileWriter(ENTREPRISE_FILTERED))) {
