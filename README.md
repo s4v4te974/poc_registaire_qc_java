@@ -23,7 +23,7 @@ Batch:
 - _Write processed data in DB_
 
 ### What is missing
-Due to the fact taht this is a POC, some mandatory programming practice are missing
+Due to the fact that this is a POC, some mandatory programming practice are missing
  _- No Exception handling_ (only just log)
  _- No parallel processing_ 
  _- Database for Batch processing are not well created_ (only just log)
