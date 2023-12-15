@@ -7,19 +7,19 @@ https://www.registreentreprises.gouv.qc.ca/RQAnonymeGR/GR/GR03/GR03A2_22A_PIU_Re
 # Output: 
 _Data formatted in a PostgreSql database_
 
-##Description: 
+## Description: 
 **The batch himself read the csv Files and cross data with the other csv files to keep only some data**
 
 Batch:
-#Tasklet :
+# Tasklet :
 - _Download the file_
 - _Unzip it_
 - _Remove line to keep_ (optionnal)
-#Reader:
+# Reader:
 - _Read rows from the csv files_
-#Processor:
+# Processor:
 - _Process the different CSV files (3/5 in our case) to construct the data to be inserted in DB_ 
-#Writer:
+# Writer:
 - _Write processed data in DB_
 
 ### What is missing
