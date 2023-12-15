@@ -8,7 +8,7 @@ https://www.registreentreprises.gouv.qc.ca/RQAnonymeGR/GR/GR03/GR03A2_22A_PIU_Re
 _Data formatted in a PostgreSql database_
 
 # Description: 
-**The batch himself read the csv Files and cross data with the other csv files to keep only some data**
+**The batch itself read the csv Files and cross data with the other csv files to keep only some data**
 
 # Batch:
 ### Tasklet :
