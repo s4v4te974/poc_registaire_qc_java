@@ -4,3 +4,4 @@
 *.xml
 .idea/vcs.xml
 *.iml
+*.properties
