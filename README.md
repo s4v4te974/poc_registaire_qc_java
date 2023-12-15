@@ -16,11 +16,11 @@ Batch:
 - _Unzip it_
 - _Remove line to keep_ (optionnal)
 #Reader:
- - _Read rows from the csv files_
+- _Read rows from the csv files_
 #Processor:
- - _Process the different CSV files (3/5 in our case) to construct the data to be inserted in DB_ 
+- _Process the different CSV files (3/5 in our case) to construct the data to be inserted in DB_ 
 #Writer:
- - _Write processed data in DB_
+- _Write processed data in DB_
 
 ### What is missing
 Due to the fact taht this is a POC, some mandatory programming practice are missing
