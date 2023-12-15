@@ -1,28 +1,28 @@
-### This batch is a POC to process csv file 
+# This batch is a POC to process csv file 
 
-# Input:
+### Input:
 _Csv file download from_ 
 https://www.registreentreprises.gouv.qc.ca/RQAnonymeGR/GR/GR03/GR03A2_22A_PIU_RecupDonnPub_PC/FichierDonneesOuvertes.aspx 
 
-# Output: 
+### Output: 
 _Data formatted in a PostgreSql database_
 
-## Description: 
+# Description: 
 **The batch himself read the csv Files and cross data with the other csv files to keep only some data**
 
-## Batch:
-# Tasklet :
+# Batch:
+### Tasklet :
 - _Download the file_
 - _Unzip it_
 - _Remove line to keep_ (optionnal)
-# Reader:
+### Reader:
 - _Read rows from the csv files_
-# Processor:
+### Processor:
 - _Process the different CSV files (3/5 in our case) to construct the data to be inserted in DB_ 
-# Writer:
+### Writer:
 - _Write processed data in DB_
 
-### What is missing
+# What is missing
 Due to the fact that this is a POC, some mandatory programming practice are missing
  _- No Exception handling_ (only just log)
  _- No parallel processing_ 
