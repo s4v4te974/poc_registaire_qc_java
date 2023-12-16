@@ -1,5 +1,10 @@
 # This batch is a POC to process csv file 
 
+## This POC have 2 folder : 
+ _- One using SQL, and writing data in different tables_
+ _- One using NoSql, and save data in a single line_
+
+
 ### Input:
 _Csv file download from_ 
 https://www.registreentreprises.gouv.qc.ca/RQAnonymeGR/GR/GR03/GR03A2_22A_PIU_RecupDonnPub_PC/FichierDonneesOuvertes.aspx 
@@ -27,8 +32,3 @@ Due to the fact that this is a POC, some mandatory programming practice are miss
  _- No Exception handling_ (only just log)
  _- No parallel processing_ 
  _- Database for Batch processing are not well created_ (only just log)
-
-
-#This POC have 2 folder : 
- - one using SQL, and writing data in different tables
- - One using NoSql, and save data in a single line
