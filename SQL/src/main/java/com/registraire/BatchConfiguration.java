@@ -33,6 +33,7 @@ import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilde
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -279,7 +280,7 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step filterAndSaveFusionScission(FlatFileItemReader<FusionScission> fuSciReader,
+    public Step filterAndSaveFuSci(FlatFileItemReader<FusionScission> fuSciReader,
                                             ItemProcessor<FusionScission, FusionScission> fuSciProcessor,
                                             JdbcBatchItemWriter<FusionScission> fuSciWriter,
                                             JobRepository jobRepository,
@@ -333,13 +334,13 @@ public class BatchConfiguration {
     // Nom end
 
     @Bean
-    public Job processCsvFile(Step downloadAndProcessTasklet,
-                              Step filterAndSaveEntreprise,
-                              Step filterAndSaveContiTransfo,
-                              Step filterAndSaveDomaineValeur,
-                              Step filterAndSaveEtablissement,
-                              Step filterAndSaveFuSci,
-                              Step filterAndSaveName,
+    public Job processCsvFile(@Qualifier("downloadAndProcessTasklet") Step downloadAndProcessTasklet,
+                              @Qualifier("filterAndSaveEntreprise") Step filterAndSaveEntreprise,
+                              @Qualifier("filterAndSaveContiTransfo") Step filterAndSaveContiTransfo,
+                              @Qualifier("filterAndSaveDomaineValeur") Step filterAndSaveDomaineValeur,
+                              @Qualifier("filterAndSaveEtablissement") Step filterAndSaveEtablissement,
+                              @Qualifier("filterAndSaveFuSci") Step filterAndSaveFuSci,
+                              @Qualifier("filterAndSaveName") Step filterAndSaveName,
                               CustomListener listener,
                               JobRepository jobRepository) {
         return new JobBuilder("ExtractData", jobRepository)
