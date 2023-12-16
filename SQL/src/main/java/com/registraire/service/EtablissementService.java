@@ -1,14 +1,14 @@
 package com.registraire.service;
 
-import com.registraire.model.RegistraireDto;
+import com.registraire.model.Etablissement;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface ReaderService {
+public interface EtablissementService {
 
-    DefaultLineMapper<RegistraireDto> lineMapper();
+    DefaultLineMapper<Etablissement> defaultlineMapper();
 
-    FieldSetMapper<RegistraireDto> fieldSetMapper();
+    FieldSetMapper<Etablissement> fieldSetMapper();
 }
