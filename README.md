@@ -1,8 +1,8 @@
 # This batch is a POC to process csv file 
 
 ## This POC have 2 folder : 
- _- One using SQL, and writing data in different tables_
- _- One using NoSql, and save data in a single line_
+ - _One using SQL, and writing data in different tables_
+ - _One using NoSql, and save data in a single line_
 
 
 ### Input:
