@@ -1,7 +1,7 @@
 package com.registraire.step.processor;
 
+import com.registraire.model.ContinuationTransformation;
 import com.registraire.model.Entreprise;
-import com.registraire.model.Etablissement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
@@ -18,13 +18,14 @@ import static com.registraire.utils.BatchUtils.REQUEST_NEQ;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class EtablissementProcessor implements ItemProcessor<Etablissement, Etablissement> {
+public class ContinuationTransformationProcessor
+        implements ItemProcessor<ContinuationTransformation, ContinuationTransformation> {
 
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public Etablissement process(Etablissement item) throws Exception {
-        log.info("Start Etablissement process");
+    public ContinuationTransformation process(ContinuationTransformation item) throws Exception {
+        log.info("Start ContinuationTransformation process");
         List<Entreprise> entrepriseList = jdbcTemplate.queryForList(REQUEST_NEQ, Entreprise.class);
         Map<String, Entreprise> entreprisesByNeq = entrepriseList.stream()
                 .collect(Collectors.toMap(Entreprise::neq, Function.identity()));

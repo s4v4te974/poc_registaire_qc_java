@@ -1,7 +1,7 @@
 package com.registraire.step.processor;
 
+import com.registraire.model.DomaineValeur;
 import com.registraire.model.Entreprise;
-import com.registraire.model.Etablissement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
@@ -18,17 +18,18 @@ import static com.registraire.utils.BatchUtils.REQUEST_NEQ;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class EtablissementProcessor implements ItemProcessor<Etablissement, Etablissement> {
+public class DomaineValeurProcessor implements ItemProcessor<DomaineValeur, DomaineValeur> {
 
     private JdbcTemplate jdbcTemplate;
 
+
     @Override
-    public Etablissement process(Etablissement item) throws Exception {
-        log.info("Start Etablissement process");
+    public DomaineValeur process(DomaineValeur item) throws Exception {
+        log.info("Start FusionScission process");
         List<Entreprise> entrepriseList = jdbcTemplate.queryForList(REQUEST_NEQ, Entreprise.class);
-        Map<String, Entreprise> entreprisesByNeq = entrepriseList.stream()
-                .collect(Collectors.toMap(Entreprise::neq, Function.identity()));
-        if (entreprisesByNeq.containsKey(item.neq())) {
+        Map<String, Entreprise> entrepriseByValue = entrepriseList.stream()
+                .collect(Collectors.toMap(Entreprise::codActEconCae, Function.identity()));
+        if(entrepriseByValue.containsKey(item.codDomVal())){
             return item;
         }
         return null;

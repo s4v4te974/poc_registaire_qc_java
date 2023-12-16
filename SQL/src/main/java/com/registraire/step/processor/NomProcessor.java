@@ -1,7 +1,7 @@
 package com.registraire.step.processor;
 
 import com.registraire.model.Entreprise;
-import com.registraire.model.Etablissement;
+import com.registraire.model.Nom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
@@ -13,20 +13,18 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.registraire.utils.BatchUtils.REQUEST_NEQ;
-
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class EtablissementProcessor implements ItemProcessor<Etablissement, Etablissement> {
+public class NomProcessor implements ItemProcessor<Nom, Nom> {
 
     private JdbcTemplate jdbcTemplate;
 
     @Override
-    public Etablissement process(Etablissement item) throws Exception {
-        log.info("Start Etablissement process");
-        List<Entreprise> entrepriseList = jdbcTemplate.queryForList(REQUEST_NEQ, Entreprise.class);
-        Map<String, Entreprise> entreprisesByNeq = entrepriseList.stream()
+    public Nom process(Nom item) throws Exception {
+        log.info("Start nom process");
+        List<Entreprise> entreprises = jdbcTemplate.queryForList("SELECT * FROM NOM", Entreprise.class);
+        Map<String, Entreprise> entreprisesByNeq = entreprises.stream()
                 .collect(Collectors.toMap(Entreprise::neq, Function.identity()));
         if (entreprisesByNeq.containsKey(item.neq())) {
             return item;
