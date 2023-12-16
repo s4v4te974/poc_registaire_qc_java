@@ -1,14 +1,19 @@
 package com.registraire.step.writer;
 
 import com.registraire.model.Etablissement;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+@Component
+@Slf4j
 public class EtablissementWriter extends JdbcBatchItemWriter<Etablissement> {
 
     public JdbcBatchItemWriter<Etablissement> etablissementWriter(DataSource datasource) {
+        log.info("Etablissement writer");
         return new JdbcBatchItemWriterBuilder<Etablissement>()
                 .sql("INSERT INTO your_table_name (" +
                         "    NEQ, NO_SUF_ETAB, IND_ETAB_PRINC, IND_SALON_BRONZ, IND_VENTE_TABAC_DETL, IND_DISP," +

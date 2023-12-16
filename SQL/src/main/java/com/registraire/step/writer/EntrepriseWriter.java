@@ -1,6 +1,7 @@
 package com.registraire.step.writer;
 
 import com.registraire.model.Entreprise;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.stereotype.Component;
@@ -8,9 +9,11 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 
 @Component
+@Slf4j
 public class EntrepriseWriter extends JdbcBatchItemWriter<Entreprise> {
 
     public JdbcBatchItemWriter<Entreprise> entrepriseWriter(DataSource dataSource) {
+        log.info("Entreprise writer");
         return new JdbcBatchItemWriterBuilder<Entreprise>()
                 .sql("INSERT INTO entreprise (" +
                         "    NEQ, IND_FAIL, DAT_IMMAT, COD_REGIM_JURI, COD_INTVAL_EMPLO_QUE, DAT_CESS_PREVU, COD_STAT_IMMAT," +

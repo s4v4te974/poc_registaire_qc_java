@@ -22,7 +22,6 @@ public class DomaineValeurProcessor implements ItemProcessor<DomaineValeur, Doma
 
     private JdbcTemplate jdbcTemplate;
 
-
     @Override
     public DomaineValeur process(DomaineValeur item) throws Exception {
         log.info("Start FusionScission process");
