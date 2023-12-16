@@ -18,7 +18,7 @@ import static com.registraire.utils.BatchUtils.REQUEST_NEQ;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class ContinuationTransformationProcessor
+public class  ContinuationTransformationProcessor
         implements ItemProcessor<ContinuationTransformation, ContinuationTransformation> {
 
     private JdbcTemplate jdbcTemplate;

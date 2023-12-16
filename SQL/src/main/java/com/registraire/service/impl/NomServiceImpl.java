@@ -5,9 +5,11 @@ import com.registraire.service.NomService;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+@Service
 public class NomServiceImpl implements NomService {
     @Override
     public DefaultLineMapper<Nom> defaultlineMapper() {

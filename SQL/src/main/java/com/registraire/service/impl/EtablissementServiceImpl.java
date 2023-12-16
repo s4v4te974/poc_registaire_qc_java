@@ -5,7 +5,9 @@ import com.registraire.service.EtablissementService;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EtablissementServiceImpl implements EtablissementService {
     @Override
     public DefaultLineMapper<Etablissement> defaultlineMapper() {

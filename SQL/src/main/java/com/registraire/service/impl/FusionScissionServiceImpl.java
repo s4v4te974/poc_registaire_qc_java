@@ -7,9 +7,11 @@ import com.registraire.service.FusionScissionService;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+@Service
 public class FusionScissionServiceImpl implements FusionScissionService {
     @Override
     public DefaultLineMapper<FusionScission> defaultlineMapper() {

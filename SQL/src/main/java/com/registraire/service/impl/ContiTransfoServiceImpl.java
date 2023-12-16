@@ -5,10 +5,13 @@ import com.registraire.service.ContiTransfoService;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+@Service
 public class ContiTransfoServiceImpl implements ContiTransfoService {
+
     @Override
     public DefaultLineMapper<ContinuationTransformation> defaultLineMapper() {
         DefaultLineMapper<ContinuationTransformation> lineMapper = new DefaultLineMapper<>();
@@ -21,14 +24,12 @@ public class ContiTransfoServiceImpl implements ContiTransfoService {
 
     @Override
     public FieldSetMapper<ContinuationTransformation> fieldSetMapper() {
-        return fieldSet -> {
-            return new ContinuationTransformation(
-                    fieldSet.readString(0),
-                    fieldSet.readString(1),
-                    fieldSet.readString(2),
-                    fieldSet.readString(3),
-                    fieldSet.readString(4),
-                    LocalDate.parse(fieldSet.readString(5)));
-        };
+        return fieldSet -> new ContinuationTransformation(
+                fieldSet.readString(0),
+                fieldSet.readString(1),
+                fieldSet.readString(2),
+                fieldSet.readString(3),
+                fieldSet.readString(4),
+                LocalDate.parse(fieldSet.readString(5)));
     }
 }

@@ -9,7 +9,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
-    url: jdbc:postgresql://localhost:5432/registraire
+    url: jdbc:postgresql://localhost:5432/RegistraireJava
     username: postgres
     password: postgres
     initialization-mode: always
