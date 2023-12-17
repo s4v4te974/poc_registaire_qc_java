@@ -20,7 +20,7 @@ public class TaskletUtils {
 
     public static final String FILE_DELETE_ERROR = "Unable to delete Downloaded file";
 
-    public static final String ENTREPRISE_FILTERED = "src/main/download/Entreprise2-filtered.csv";
+    public static final String ENTREPRISE_FILTERED = "src/main/download/Entreprise-filtered.csv";
 
     public static final String FILE_RENAMED = "file renamed with success";
 

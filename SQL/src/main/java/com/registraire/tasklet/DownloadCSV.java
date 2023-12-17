@@ -22,9 +22,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 import static com.registraire.utils.BatchUtils.ENTREPRISE;
-import static com.registraire.utils.BatchUtils.NAME;
 import static com.registraire.utils.BatchUtils.UNABLE_TO_OPEN_FILE;
 import static com.registraire.utils.TaskletUtils.COD_FORME_JURI;
 import static com.registraire.utils.TaskletUtils.COD_FORME_JURI_VALUE;
@@ -50,7 +50,7 @@ import static com.registraire.utils.TaskletUtils.ZIP_FILE_PATH;
 
 @Slf4j
 @RequiredArgsConstructor
-public class downloadCSV implements Tasklet {
+public class DownloadCSV implements Tasklet {
 
     private boolean isFileDownloaded = false;
     private final Object lock = new Object();
@@ -109,17 +109,16 @@ public class downloadCSV implements Tasklet {
 
     // this method is optional, use only for test
     private void removeUnecessaryLines() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ENTREPRISE_FILTERED))) {
-            CSVReader reader = new CSVReader(new FileReader(NAME));
+        try (CSVReader reader = new CSVReader(new FileReader(ENTREPRISE));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(ENTREPRISE_FILTERED))) {
             String[] line;
             int count = 0;
             while ((line = reader.readNext()) != null && count <= TOTAL_RESULT) {
-                if ((line[IND_FAIL] == null || line[IND_FAIL].equals(IND_FAIL_VALUE)) &&
-                        (line[DAT_CESS_PREVU] == null || line[DAT_CESS_PREVU].isEmpty()) &&
-                        line[COD_STAT_IMMAT].equals(COD_STAT_IMMAT_VALUE) &&
-                        !line[COD_FORME_JURI].equals(COD_FORME_JURI_VALUE) &&
-                        LocalDate.parse(line[DAT_DEPO_DECLR]).isAfter(LocalDate.of(2013, 12, 31))) {
-
+                if (isEmptyOrNull(line[IND_FAIL]) &&
+                        isEmptyOrNull(line[DAT_CESS_PREVU]) &&
+                        COD_STAT_IMMAT_VALUE.equals(line[COD_STAT_IMMAT]) &&
+                        !COD_FORME_JURI_VALUE.equals(line[COD_FORME_JURI]) &&
+                        isValidDate(line[DAT_DEPO_DECLR])) {
                     writer.write(String.join(",", line));
                     writer.newLine();
                     count++;
@@ -130,7 +129,7 @@ public class downloadCSV implements Tasklet {
         }
     }
 
-    private void removeDuplicatedFile(){
+    private void removeDuplicatedFile() {
         try {
             Files.delete(Paths.get(ENTREPRISE));
             File fileToRename = new File(ENTREPRISE_FILTERED);
@@ -144,5 +143,21 @@ public class downloadCSV implements Tasklet {
         } catch (IOException e) {
             log.error(UNABLE_TO_REMOVE_FILE);
         }
+    }
+
+    private boolean isEmptyOrNull(String columnValue) {
+        return columnValue == null || columnValue.isEmpty();
+    }
+
+    private boolean isValidDate(String dateStr) {
+        try {
+            if (!isEmptyOrNull(dateStr)) {
+                LocalDate.parse(dateStr);
+                return true;
+            }
+        } catch (DateTimeParseException ex) {
+            log.warn("Invalid date format: " + dateStr);
+        }
+        return false;
     }
 }

@@ -2,6 +2,8 @@ package com.registraire.utils;
 
 import lombok.experimental.UtilityClass;
 
+import java.time.LocalDate;
+
 @UtilityClass
 public class BatchUtils {
 

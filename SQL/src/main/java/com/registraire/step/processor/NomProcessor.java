@@ -5,6 +5,7 @@ import com.registraire.model.Nom;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -15,9 +16,9 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class NomProcessor implements ItemProcessor<Nom, Nom> {
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override

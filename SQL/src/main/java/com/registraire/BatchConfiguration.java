@@ -18,7 +18,8 @@ import com.registraire.step.processor.DomaineValeurProcessor;
 import com.registraire.step.processor.EtablissementProcessor;
 import com.registraire.step.processor.FusionScissionProcessor;
 import com.registraire.step.processor.NomProcessor;
-import com.registraire.tasklet.downloadCSV;
+import com.registraire.tasklet.DownloadCSV;
+import com.registraire.tasklet.RemoveAllFiles;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -88,17 +89,32 @@ public class BatchConfiguration {
 
     // download begin
     @Bean
-    public Tasklet task() {
-        return new downloadCSV();
+    public Tasklet downloadAndParseCsv() {
+        return new DownloadCSV();
     }
+
+    @Bean
+    public Tasklet removeFiles(){
+        return new RemoveAllFiles();
+    }
+
 
     @Bean
     public Step downloadAndProcessTasklet(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         return new StepBuilder("downloadAndProcessTasklet", jobRepository)
-                .tasklet(task(), transactionManager)
+                .tasklet(downloadAndParseCsv(), transactionManager)
                 .build();
     }
     // download end
+
+
+    @Bean
+    public Step removeFilesTasklet(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("removeFilesTasklet", jobRepository)
+                .tasklet(removeFiles(), transactionManager)
+                .build();
+    }
+
 
     // ContinuationTransfo begin
 
@@ -341,6 +357,7 @@ public class BatchConfiguration {
                               @Qualifier("filterAndSaveEtablissement") Step filterAndSaveEtablissement,
                               @Qualifier("filterAndSaveFuSci") Step filterAndSaveFuSci,
                               @Qualifier("filterAndSaveName") Step filterAndSaveName,
+                              @Qualifier("removeFilesTasklet") Step removeFilesTasklet,
                               CustomListener listener,
                               JobRepository jobRepository) {
         return new JobBuilder("ExtractData", jobRepository)
@@ -352,6 +369,7 @@ public class BatchConfiguration {
                 .next(filterAndSaveContiTransfo)
                 .next(filterAndSaveEtablissement)
                 .next(filterAndSaveName)
+                .next(removeFilesTasklet)
                 .build();
     }
 }

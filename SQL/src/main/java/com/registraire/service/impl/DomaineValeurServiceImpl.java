@@ -21,11 +21,9 @@ public class DomaineValeurServiceImpl implements DomaineValeurService {
 
     @Override
     public FieldSetMapper<DomaineValeur> fieldSetMapper() {
-        return fieldSet -> {
-            return new DomaineValeur(
-                    fieldSet.readString(0),
-                    fieldSet.readString(1),
-                    fieldSet.readString(2));
-        };
+        return fieldSet -> new DomaineValeur(
+                fieldSet.readString(0),
+                fieldSet.readString(1),
+                fieldSet.readString(2));
     }
 }

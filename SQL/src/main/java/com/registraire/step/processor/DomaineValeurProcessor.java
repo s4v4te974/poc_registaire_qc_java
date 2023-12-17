@@ -5,6 +5,7 @@ import com.registraire.model.Entreprise;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +18,9 @@ import static com.registraire.utils.BatchUtils.REQUEST_NEQ;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class DomaineValeurProcessor implements ItemProcessor<DomaineValeur, DomaineValeur> {
 
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override

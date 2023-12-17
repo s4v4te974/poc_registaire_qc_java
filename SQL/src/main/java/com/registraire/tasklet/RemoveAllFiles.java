@@ -1,9 +1,10 @@
-package com.registraire.step.afterstep;
+package com.registraire.tasklet;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,10 +16,9 @@ import static com.registraire.utils.TaskletUtils.DOWNLOAD_FILE_PATH;
 
 @Component
 @Slf4j
-public class RemoveAllFilesListener implements StepExecutionListener {
-
+public class RemoveAllFiles implements Tasklet {
     @Override
-    public ExitStatus afterStep(StepExecution stepExecution) {
+    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         Path folder = Paths.get(DOWNLOAD_FILE_PATH);
         try {
             Files.walk(folder).filter(Files::isRegularFile).forEach(file ->
