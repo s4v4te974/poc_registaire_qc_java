@@ -149,7 +149,7 @@ public class BatchConfiguration {
                                           JobRepository jobRepository,
                                           PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveContiTransfo", jobRepository)
-                .<ContinuationTransformation, ContinuationTransformation>chunk(1000, transactionManager)
+                .<ContinuationTransformation, ContinuationTransformation>chunk(1500, transactionManager)
                 .reader(contiReader)
                 .processor(contiProcessor)
                 .writer(contiWriter)
@@ -190,7 +190,7 @@ public class BatchConfiguration {
                                            JobRepository jobRepository,
                                            PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveDomaineValeur", jobRepository)
-                .<DomaineValeur, DomaineValeur>chunk(1000, transactionManager)
+                .<DomaineValeur, DomaineValeur>chunk(300, transactionManager)
                 .reader(domaineReader)
                 .processor(domaineProcessor)
                 .writer(domaineWriter)
@@ -222,7 +222,7 @@ public class BatchConfiguration {
                                         JdbcBatchItemWriter<Entreprise> writer, JobRepository jobRepository,
                                         PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveEntreprise", jobRepository)
-                .<Entreprise, Entreprise>chunk(100, transactionManager)
+                .<Entreprise, Entreprise>chunk(500, transactionManager)
                 .reader(reader)
                 .writer(writer)
                 .build();
@@ -262,7 +262,7 @@ public class BatchConfiguration {
                                            JobRepository jobRepository,
                                            PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveEtablissement", jobRepository)
-                .<Etablissement, Etablissement>chunk(1000, transactionManager)
+                .<Etablissement, Etablissement>chunk(2000, transactionManager)
                 .reader(etabReader)
                 .processor(etabProcessor)
                 .writer(etabWriter)
@@ -302,7 +302,7 @@ public class BatchConfiguration {
                                             JobRepository jobRepository,
                                             PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveFuSci", jobRepository)
-                .<FusionScission, FusionScission>chunk(1000, transactionManager)
+                .<FusionScission, FusionScission>chunk(10000, transactionManager)
                 .reader(fuSciReader)
                 .processor(fuSciProcessor)
                 .writer(fuSciWriter)
@@ -341,7 +341,7 @@ public class BatchConfiguration {
                                   JobRepository jobRepository,
                                   PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveName", jobRepository)
-                .<Nom, Nom>chunk(1000, transactionManager)
+                .<Nom, Nom>chunk(100000, transactionManager)
                 .reader(nomReader)
                 .processor(nomProcessor)
                 .writer(nomWriter)

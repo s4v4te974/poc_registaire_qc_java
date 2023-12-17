@@ -24,7 +24,7 @@ public class BatchUtils {
 
     public static final String CONTINUATION_TRANSFORMATION_SQL = "INSERT INTO ContinuationTransformation (neq, cod_typ_chang, cod_regim_juri, autr_regim_juri, nom_loclt, dat_efctvt)" +
             "VALUES (:neq, :codTypChang, :codRegimJuri, :autrRegimJuri, :nomLoclt, :datEfctvt)" +
-            "ON CONFLICT (neq) DO UPDATE" +
+            "ON CONFLICT (neq) DO UPDATE " +
             "SET cod_typ_chang = EXCLUDED.cod_typ_chang," +
             "    cod_regim_juri = EXCLUDED.cod_regim_juri," +
             "    autr_regim_juri = EXCLUDED.autr_regim_juri," +
@@ -33,7 +33,7 @@ public class BatchUtils {
 
     public static final String DOMAINE_VALEUR_SQL = "INSERT INTO DomaineValeur (typ_dom_val, cod_dom_val, val_dom_fran)" +
             "VALUES (:typDomVal, :codDomVal, :valDomFran)" +
-            "ON CONFLICT (cod_dom_val) DO UPDATE" +
+            "ON CONFLICT (cod_dom_val) DO UPDATE " +
             "SET typ_dom_val = EXCLUDED.typ_dom_val," +
             "    val_dom_fran = EXCLUDED.val_dom_fran;";
 
@@ -116,7 +116,7 @@ public class BatchUtils {
 
     public static final String FUS_SCI_SQL = "INSERT INTO FusionScission (neq, neq_assuj_rel, denom_soc, cod_rela_assuj, dat_efctvt, ind_disp, lign1_adr, lign2_adr)" +
             "VALUES (:neq, :neqAssujRel, :denomSoc, :codRelaAssuj, :datEfctvt, :indDisp, :lign1Adr, :lign2Adr)" +
-            "ON CONFLICT (neq) DO UPDATE" +
+            "ON CONFLICT (neq) DO UPDATE " +
             "SET neq_assuj_rel = EXCLUDED.neq_assuj_rel," +
             "    denom_soc = EXCLUDED.denom_soc," +
             "    cod_rela_assuj = EXCLUDED.cod_rela_assuj," +
@@ -127,7 +127,7 @@ public class BatchUtils {
 
     public static final String NOM_SQL = "INSERT INTO Nom (neq, nom_assuj, nom_assuj_lang_etrng, stat_nom, typ_nom_assuj, dat_init_nom_assuj, dat_fin_nom_assuj)" +
             "VALUES (:neq, :nomAssuj, :nomAssujLangEtrng, :statNom, :typNomAssuj, :datInitNomAssuj, :datFinNomAssuj)" +
-            "ON CONFLICT (neq) DO UPDATE" +
+            "ON CONFLICT (neq) DO UPDATE " +
             "SET nom_assuj = EXCLUDED.nom_assuj," +
             "    nom_assuj_lang_etrng = EXCLUDED.nom_assuj_lang_etrng," +
             "    stat_nom = EXCLUDED.stat_nom," +

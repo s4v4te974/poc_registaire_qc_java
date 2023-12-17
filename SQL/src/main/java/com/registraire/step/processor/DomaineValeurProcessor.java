@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -25,10 +26,9 @@ public class DomaineValeurProcessor implements ItemProcessor<DomaineValeur, Doma
 
     @Override
     public DomaineValeur process(DomaineValeur item) throws Exception {
-        log.info("Start FusionScission process");
-        List<Entreprise> entrepriseList = jdbcTemplate.queryForList(REQUEST_NEQ, Entreprise.class);
+        List<Entreprise> entrepriseList = jdbcTemplate.query(REQUEST_NEQ, new BeanPropertyRowMapper<>(Entreprise.class));
         Map<String, Entreprise> entrepriseByValue = entrepriseList.stream()
-                .collect(Collectors.toMap(Entreprise::codActEconCae, Function.identity()));
+                .collect(Collectors.toMap(Entreprise::getCodActEconCae, Function.identity()));
         if(entrepriseByValue.containsKey(item.codDomVal())){
             return item;
         }
