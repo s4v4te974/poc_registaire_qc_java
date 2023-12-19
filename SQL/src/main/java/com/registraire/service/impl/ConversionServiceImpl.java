@@ -18,7 +18,7 @@ public class ConversionServiceImpl implements ConversionService {
             try {
                 return Integer.parseInt(column);
             } catch (NumberFormatException e) {
-                log.error("shitty line");
+                log.error("");
             }
         }
         return -1;
@@ -30,7 +30,7 @@ public class ConversionServiceImpl implements ConversionService {
             try {
                 return LocalDate.parse(column);
             } catch (DateTimeParseException e) {
-                log.error("shitty line");
+                log.error("");
             }
         }
         return LocalDate.now();

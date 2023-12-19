@@ -20,15 +20,23 @@ public class TaskletUtils {
 
     public static final String FILE_DELETE_ERROR = "Unable to delete Downloaded file";
 
-    public static final String ENTREPRISE_FILTERED = "src/main/download/Entreprise-filtered.csv";
+    public static final String UNABLE_TO_REMOVE_FILE = "Unable to remove the file {}";
+
+    public static final String POINT = ".";
+
+    public static final String FILTERED = "-filtered";
 
     public static final String FILE_RENAMED = "file renamed with success";
 
-    public static final String UNABLE_TO_RENAME_FILE = "unable to rename file";
+    public static final String UNABLE_TO_RENAME_FILE = "unable to rename file {}";
 
-    public static final String UNABLE_TO_REMOVE_FILE = "unable to remove file";
+    public static final String UNABLE_TO_RETRIEVE_LIST_OF_FILES = "No files to update";
 
-    public static final int TOTAL_RESULT = 200;
+    public static final String ENTREPRISE_NAME = "Entreprise";
+
+    public static final String DOMAINE_NAME = "DomaineValeur";
+
+    public static final int TOTAL_RESULT = 100000;
 
     public static final int IND_FAIL = 1;
 
@@ -45,8 +53,13 @@ public class TaskletUtils {
     public static final String COD_STAT_IMMAT_VALUE = "IM";
     public static final String COD_FORME_JURI_VALUE = "IND";
 
-    public static int NEQ = 0;
+    public static final int NEQ = 0;
 
-    public static int COD_DOM_VAL = 17;
+    public static final int COD_DOM_VAL = 17;
+
+    public static final String CSV_PARSE_WITH_SUCCESS = "CSV {} parse with success";
+    public static final String CSV_PARSE_WITH_ERROR = "CSV {} parse error";
+
+
 
 }
