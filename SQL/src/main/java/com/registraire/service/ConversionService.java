@@ -13,4 +13,6 @@ public interface ConversionService {
 
     char parseColumnToChar(String column);
 
+    String[] handleSpecialCharacters(String[] line);
+
 }

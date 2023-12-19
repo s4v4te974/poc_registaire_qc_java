@@ -2,11 +2,13 @@ package com.registraire.tasklet;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import com.registraire.service.ConversionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -52,6 +54,9 @@ import static com.registraire.utils.TaskletUtils.UNABLE_TO_RETRIEVE_LIST_OF_FILE
 @Slf4j
 public class ParseCsv implements Tasklet {
 
+    @Autowired
+    private ConversionService conversionService;
+
     private Map<String, String[]> entrepriseByNeqs = new ConcurrentHashMap<>();
     private Map<String, String[]> entrepriseByCodes = new ConcurrentHashMap<>();
 
@@ -79,6 +84,7 @@ public class ParseCsv implements Tasklet {
             String[] line;
             int count = 0;
             while ((line = reader.readNext()) != null && count <= TOTAL_RESULT) {
+                line = conversionService.handleSpecialCharacters(line);
                 if ((isEmptyOrNull(line[IND_FAIL]) || line[IND_FAIL].equals(IND_FAIL_VALUE)) &&
                         isEmptyOrNull(line[DAT_CESS_PREVU]) &&
                         COD_STAT_IMMAT_VALUE.equals(line[COD_STAT_IMMAT]) &&
@@ -104,6 +110,7 @@ public class ParseCsv implements Tasklet {
              BufferedWriter writer = new BufferedWriter(new FileWriter(fileOutput))) {
             String[] line;
             while ((line = reader.readNext()) != null) {
+                line = conversionService.handleSpecialCharacters(line);
                 if (entrepriseByNeqs.containsKey(line[0])) {
                     writer.write(String.join(",", line));
                     writer.newLine();
@@ -186,4 +193,6 @@ public class ParseCsv implements Tasklet {
         int extension = fileName.indexOf(POINT);
         return new StringBuilder(fileName).insert(extension, FILTERED).toString();
     }
+
+
 }

@@ -17,8 +17,7 @@ public class ConversionServiceImpl implements ConversionService {
         if (column != null && !column.isEmpty()) {
             try {
                 return Integer.parseInt(column);
-            } catch (NumberFormatException e) {
-                log.error("");
+            } catch (NumberFormatException ignored) {
             }
         }
         return -1;
@@ -29,8 +28,7 @@ public class ConversionServiceImpl implements ConversionService {
         if (column != null && !column.isEmpty()) {
             try {
                 return LocalDate.parse(column);
-            } catch (DateTimeParseException e) {
-                log.error("");
+            } catch (DateTimeParseException ignored) {
             }
         }
         return LocalDate.now();
@@ -39,5 +37,13 @@ public class ConversionServiceImpl implements ConversionService {
     @Override
     public char parseColumnToChar(String column) {
         return column != null && !StringUtils.isEmpty(column) ? column.charAt(0) : ' ';
+    }
+
+    @Override
+    public String[] handleSpecialCharacters(String[] line) {
+            for (int i = 0; i < line.length; i++) {
+                line[i] = line[i].replace("\"", "'");
+            }
+            return line;
     }
 }
