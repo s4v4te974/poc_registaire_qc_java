@@ -9,3 +9,7 @@
 SQL/mvnw
 SQL/HELP.md
 registraire.iml
+*.pb
+.idea
+*.xml
+*.iml
