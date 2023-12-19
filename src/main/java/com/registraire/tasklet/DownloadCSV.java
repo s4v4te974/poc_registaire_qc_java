@@ -23,9 +23,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.registraire.utils.BatchUtils.ENTREPRISE;
 import static com.registraire.utils.BatchUtils.UNABLE_TO_OPEN_FILE;
+import static com.registraire.utils.TaskletUtils.COD_DOM_VAL;
 import static com.registraire.utils.TaskletUtils.COD_FORME_JURI;
 import static com.registraire.utils.TaskletUtils.COD_FORME_JURI_VALUE;
 import static com.registraire.utils.TaskletUtils.COD_STAT_IMMAT;
@@ -40,6 +43,7 @@ import static com.registraire.utils.TaskletUtils.FILE_DELETE_SUCCESS;
 import static com.registraire.utils.TaskletUtils.FILE_RENAMED;
 import static com.registraire.utils.TaskletUtils.IND_FAIL;
 import static com.registraire.utils.TaskletUtils.IND_FAIL_VALUE;
+import static com.registraire.utils.TaskletUtils.NEQ;
 import static com.registraire.utils.TaskletUtils.START_DOWNLOAD_FILE;
 import static com.registraire.utils.TaskletUtils.TOTAL_RESULT;
 import static com.registraire.utils.TaskletUtils.UNABLE_TO_REMOVE_FILE;
@@ -55,6 +59,9 @@ public class DownloadCSV implements Tasklet {
     private boolean isFileDownloaded = false;
     private final Object lock = new Object();
 
+    private List<String> neqs = new ArrayList<>();
+    private List<String> codes = new ArrayList<>();
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("start the tasklet");
@@ -65,8 +72,9 @@ public class DownloadCSV implements Tasklet {
             }
         }
         handleDownloadedFile();
-        removeUnecessaryLines();
-        removeDuplicatedFile();
+        // TODO write a method to rewrite all the other CSV files to reduce the search fields
+        keepDataEntreprise();
+        removeDuplicatedFiles();
         return RepeatStatus.FINISHED;
     }
 
@@ -107,20 +115,22 @@ public class DownloadCSV implements Tasklet {
         log.info(UNZIP_WITH_SUCCESS);
     }
 
-    // this method is optional, use only for test
-    private void removeUnecessaryLines() {
+    // the condition "count <= TOTAL_RESULT" is optional, use only for test
+    private void keepDataEntreprise() {
         try (CSVReader reader = new CSVReader(new FileReader(ENTREPRISE));
              BufferedWriter writer = new BufferedWriter(new FileWriter(ENTREPRISE_FILTERED))) {
             String[] line;
             int count = 0;
             while ((line = reader.readNext()) != null && count <= TOTAL_RESULT) {
-                if (isEmptyOrNull(line[IND_FAIL]) &&
+                if ((isEmptyOrNull(line[IND_FAIL]) && line[IND_FAIL].equals(IND_FAIL_VALUE)) &&
                         isEmptyOrNull(line[DAT_CESS_PREVU]) &&
                         COD_STAT_IMMAT_VALUE.equals(line[COD_STAT_IMMAT]) &&
                         !COD_FORME_JURI_VALUE.equals(line[COD_FORME_JURI]) &&
                         isValidDate(line[DAT_DEPO_DECLR])) {
                     writer.write(String.join(",", line));
                     writer.newLine();
+                    neqs.add(line[NEQ]);
+                    codes.add(line[COD_DOM_VAL]);
                     count++;
                 }
             }
@@ -129,7 +139,10 @@ public class DownloadCSV implements Tasklet {
         }
     }
 
-    private void removeDuplicatedFile() {
+    // filter all the other files
+
+
+    private void removeDuplicatedFiles() {
         try {
             Files.delete(Paths.get(ENTREPRISE));
             File fileToRename = new File(ENTREPRISE_FILTERED);

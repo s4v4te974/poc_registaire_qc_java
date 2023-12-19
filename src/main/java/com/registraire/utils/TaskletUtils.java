@@ -45,4 +45,8 @@ public class TaskletUtils {
     public static final String COD_STAT_IMMAT_VALUE = "IM";
     public static final String COD_FORME_JURI_VALUE = "IND";
 
+    public static int NEQ = 0;
+
+    public static int COD_DOM_VAL = 17;
+
 }

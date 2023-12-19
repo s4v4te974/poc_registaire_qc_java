@@ -3,14 +3,11 @@ package com.registraire.service.impl;
 import com.registraire.model.ContinuationTransformation;
 import com.registraire.service.ContiTransfoService;
 import com.registraire.service.ConversionService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 @Service
 public class ContiTransfoServiceImpl implements ContiTransfoService {
@@ -31,11 +28,11 @@ public class ContiTransfoServiceImpl implements ContiTransfoService {
     @Override
     public FieldSetMapper<ContinuationTransformation> fieldSetMapper() {
         return fieldSet -> new ContinuationTransformation(
-                    fieldSet.readString(0),
-                    fieldSet.readString(1),
-                    fieldSet.readString(2),
-                    fieldSet.readString(3),
-                    fieldSet.readString(4),
-                    conversionService.parseColumnToDate(fieldSet.readString(5)));
+                fieldSet.readString(0),
+                fieldSet.readString(1),
+                fieldSet.readString(2),
+                fieldSet.readString(3),
+                fieldSet.readString(4),
+                conversionService.parseColumnToDate(fieldSet.readString(5)));
     }
 }

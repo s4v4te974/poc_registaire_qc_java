@@ -1,8 +1,6 @@
-
 *.cmd
 *.xml
-*.xml
-.idea/vcs.xml
+.idea
 *.iml
 *.properties
 *.xml
@@ -10,7 +8,9 @@ SQL/mvnw
 SQL/HELP.md
 registraire.iml
 *.pb
-.idea
-*.xml
 *.iml
-.target
+target
+*.md
+*.iml
+*.jar
+*.csv

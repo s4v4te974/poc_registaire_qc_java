@@ -13,18 +13,21 @@ import com.registraire.service.EntrepriseService;
 import com.registraire.service.EtablissementService;
 import com.registraire.service.FusionScissionService;
 import com.registraire.service.NomService;
-import com.registraire.step.processor.ContinuationTransformationProcessor;
-import com.registraire.step.processor.DomaineValeurProcessor;
-import com.registraire.step.processor.EtablissementProcessor;
-import com.registraire.step.processor.FusionScissionProcessor;
-import com.registraire.step.processor.NomProcessor;
+import com.registraire.processor.ContinuationTransformationProcessor;
+import com.registraire.processor.DomaineValeurProcessor;
+import com.registraire.processor.EtablissementProcessor;
+import com.registraire.processor.FusionScissionProcessor;
+import com.registraire.processor.NomProcessor;
 import com.registraire.tasklet.DownloadCSV;
 import com.registraire.tasklet.RemoveAllFiles;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.job.builder.FlowBuilder;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.job.flow.Flow;
+import org.springframework.batch.core.job.flow.support.SimpleFlow;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -40,6 +43,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -85,6 +90,11 @@ public class BatchConfiguration {
     @Bean
     public PlatformTransactionManager transactionManager() {
         return new JpaTransactionManager();
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor() {
+        return new SimpleAsyncTaskExecutor("spring_batch");
     }
 
     // download begin
@@ -143,16 +153,14 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step filterAndSaveContiTransfo(FlatFileItemReader<ContinuationTransformation> contiReader,
-                                          ItemProcessor<ContinuationTransformation, ContinuationTransformation> contiProcessor,
-                                          JdbcBatchItemWriter<ContinuationTransformation> contiWriter,
+    public Step filterAndSaveContiTransfo(DataSource dataSource,
                                           JobRepository jobRepository,
                                           PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveContiTransfo", jobRepository)
                 .<ContinuationTransformation, ContinuationTransformation>chunk(1500, transactionManager)
-                .reader(contiReader)
-                .processor(contiProcessor)
-                .writer(contiWriter)
+                .reader(contTransfoFlatFileItemReader())
+                .processor(contTransfItemProcessor())
+                .writer(contTransfJdbcBatchItemWriter(dataSource))
                 .build();
     }
     // ContinuationTransfo end
@@ -184,16 +192,15 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step filterAndSaveDomaineValeur(FlatFileItemReader<DomaineValeur> domaineReader,
-                                           ItemProcessor<DomaineValeur, DomaineValeur> domaineProcessor,
-                                           JdbcBatchItemWriter<DomaineValeur> domaineWriter,
+    public Step filterAndSaveDomaineValeur(DataSource dataSource,
                                            JobRepository jobRepository,
                                            PlatformTransactionManager transactionManager) {
+        log.info("filterAndSaveDomaineValeur Step");
         return new StepBuilder("filterAndSaveDomaineValeur", jobRepository)
                 .<DomaineValeur, DomaineValeur>chunk(300, transactionManager)
-                .reader(domaineReader)
-                .processor(domaineProcessor)
-                .writer(domaineWriter)
+                .reader(domaineValueFlatFileItemReader())
+                .processor(domaineValuefItemProcessor())
+                .writer(domaineValeurJdbcBatchItemWriter(dataSource))
                 .build();
     }
     // DomaineValeur end
@@ -256,16 +263,15 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step filterAndSaveEtablissement(FlatFileItemReader<Etablissement> etabReader,
-                                           ItemProcessor<Etablissement, Etablissement> etabProcessor,
-                                           JdbcBatchItemWriter<Etablissement> etabWriter,
+    public Step filterAndSaveEtablissement(DataSource dataSource,
                                            JobRepository jobRepository,
                                            PlatformTransactionManager transactionManager) {
+        log.info("filterAndSaveEtablissement Step");
         return new StepBuilder("filterAndSaveEtablissement", jobRepository)
                 .<Etablissement, Etablissement>chunk(2000, transactionManager)
-                .reader(etabReader)
-                .processor(etabProcessor)
-                .writer(etabWriter)
+                .reader(etablissementFlatFileItemReader())
+                .processor(etablissementItemProcessor())
+                .writer(etablissementJdbcBatchItemWriter(dataSource))
                 .build();
     }
     // etablissement end
@@ -296,16 +302,15 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step filterAndSaveFuSci(FlatFileItemReader<FusionScission> fuSciReader,
-                                            ItemProcessor<FusionScission, FusionScission> fuSciProcessor,
-                                            JdbcBatchItemWriter<FusionScission> fuSciWriter,
+    public Step filterAndSaveFuSci(DataSource dataSource,
                                             JobRepository jobRepository,
                                             PlatformTransactionManager transactionManager) {
+        log.info("filterAndSaveFuSci Step");
         return new StepBuilder("filterAndSaveFuSci", jobRepository)
                 .<FusionScission, FusionScission>chunk(10000, transactionManager)
-                .reader(fuSciReader)
-                .processor(fuSciProcessor)
-                .writer(fuSciWriter)
+                .reader(fusionScissionItemReader())
+                .processor(fusionScissionItemProcessor())
+                .writer(fusionScissionJdbcBatchItemWriter(dataSource))
                 .build();
     }
     // FusionScission end
@@ -335,41 +340,99 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step filterAndSaveName(FlatFileItemReader<Nom> nomReader,
-                                  ItemProcessor<Nom, Nom> nomProcessor,
-                                  JdbcBatchItemWriter<Nom> nomWriter,
+    public Step filterAndSaveName(DataSource dataSource,
                                   JobRepository jobRepository,
                                   PlatformTransactionManager transactionManager) {
         return new StepBuilder("filterAndSaveName", jobRepository)
                 .<Nom, Nom>chunk(100000, transactionManager)
-                .reader(nomReader)
-                .processor(nomProcessor)
-                .writer(nomWriter)
+                .reader(nomFlatFileItemReader())
+                .processor(nomItemProcessor())
+                .writer(nomJdbcBatchItemWriter(dataSource))
                 .build();
     }
     // Nom end
 
     @Bean
+    public Flow flowContiTransfo(DataSource dataSource,
+                                 PlatformTransactionManager transactionManager,
+                                 JobRepository jobRepository){
+        return new FlowBuilder<SimpleFlow>("flowContiTransfo")
+                .start(filterAndSaveContiTransfo(dataSource, jobRepository, transactionManager))
+                .build();
+    }
+
+    @Bean
+    public Flow flowDomaineValeur(DataSource dataSource,
+                                  PlatformTransactionManager transactionManager,
+                                  JobRepository jobRepository){
+        return new FlowBuilder<SimpleFlow>("flowDomValue")
+                .start(filterAndSaveDomaineValeur(dataSource, jobRepository, transactionManager))
+                .build();
+    }
+
+    @Bean
+    public Flow flowFuSci(DataSource dataSource,
+                          PlatformTransactionManager transactionManager,
+                          JobRepository jobRepository){
+        return new FlowBuilder<SimpleFlow>("flowFuSci")
+                .start(filterAndSaveFuSci(dataSource, jobRepository, transactionManager))
+                .build();
+    }
+
+    @Bean
+    public Flow flowEtablissement(DataSource dataSource,
+                                  PlatformTransactionManager transactionManager,
+                                  JobRepository jobRepository){
+        return new FlowBuilder<SimpleFlow>("flowEtablissement")
+                .start(filterAndSaveEtablissement(dataSource, jobRepository, transactionManager))
+                .build();
+    }
+
+    @Bean
+    public Flow flowName(DataSource dataSource,
+                         PlatformTransactionManager transactionManager,
+                         JobRepository jobRepository){
+        return new FlowBuilder<SimpleFlow>("flowName")
+                .start(filterAndSaveName(dataSource, jobRepository, transactionManager))
+                .build();
+    }
+
+    @Bean
+    public Flow splitFlow(DataSource dataSource,
+                          PlatformTransactionManager transactionManager,
+                          JobRepository jobRepository){
+        return new FlowBuilder<SimpleFlow>("splitFlow")
+                .split(taskExecutor())
+                .add(flowContiTransfo(dataSource, transactionManager, jobRepository),
+                        flowDomaineValeur(dataSource, transactionManager, jobRepository),
+                        flowFuSci(dataSource, transactionManager, jobRepository),
+                        flowEtablissement(dataSource, transactionManager, jobRepository),
+                        flowName(dataSource, transactionManager, jobRepository)
+                )
+                .build();
+    }
+
+    @Bean
+    public Step parallelFlowsStep(DataSource dataSource, PlatformTransactionManager transactionManager,
+                                  JobRepository jobRepository) {
+        return new StepBuilder("parallelFlowsStep", jobRepository)
+                .flow(splitFlow(dataSource, transactionManager, jobRepository))
+                .build();
+    }
+
+    @Bean
     public Job processCsvFile(@Qualifier("downloadAndProcessTasklet") Step downloadAndProcessTasklet,
                               @Qualifier("filterAndSaveEntreprise") Step filterAndSaveEntreprise,
-                              @Qualifier("filterAndSaveContiTransfo") Step filterAndSaveContiTransfo,
-                              @Qualifier("filterAndSaveDomaineValeur") Step filterAndSaveDomaineValeur,
-                              @Qualifier("filterAndSaveEtablissement") Step filterAndSaveEtablissement,
-                              @Qualifier("filterAndSaveFuSci") Step filterAndSaveFuSci,
-                              @Qualifier("filterAndSaveName") Step filterAndSaveName,
+                              @Qualifier("parallelFlowsStep") Step parallelFlowsStep,
                               @Qualifier("removeFilesTasklet") Step removeFilesTasklet,
                               CustomListener listener,
                               JobRepository jobRepository) {
         return new JobBuilder("ExtractData", jobRepository)
                 .listener(listener)
                 .start(downloadAndProcessTasklet)
-                .next(filterAndSaveEntreprise)
-                .next(filterAndSaveFuSci)
-                .next(filterAndSaveDomaineValeur)
-                .next(filterAndSaveContiTransfo)
-                .next(filterAndSaveEtablissement)
-                .next(filterAndSaveName)
-                .next(removeFilesTasklet)
+                //.next(filterAndSaveEntreprise)
+                //.next(parallelFlowsStep)
+                //.next(removeFilesTasklet)
                 .build();
     }
 }
